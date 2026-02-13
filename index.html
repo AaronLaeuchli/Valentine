@@ -129,6 +129,20 @@
                 transform: translate(-50%, -50%) scale(1.1);
             }
         }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -198,6 +212,11 @@
 
         // Yes button fireworks
         yesBtn.addEventListener('click', () => {
+            // Play party sound
+            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGgpBmeHyvmwhBTGH0fPTgjMGHm7A7+OaUQ0PVKzn77BfGg==');
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log('Audio play failed:', e));
+
             // Hide buttons
             yesBtn.style.display = 'none';
             noBtn.style.display = 'none';
@@ -205,12 +224,79 @@
             // Show celebration message
             const celebration = document.createElement('div');
             celebration.className = 'celebration';
-            celebration.innerHTML = '🎉 Yay! 💕';
+            celebration.innerHTML = '🎉 YAY! 💕✨🎊';
             document.body.appendChild(celebration);
 
+            // EXTREME CONFETTI PARTY!
+            createMassiveConfetti();
+            
             // Create fireworks
             createFireworks();
         });
+
+        function createMassiveConfetti() {
+            const confettiColors = ['#FFB6D9', '#FF8DC7', '#E0BBE4', '#D4A5D9', '#FFC9E0', '#FFE5EC', '#FF69B4', '#DDA0DD', '#F0E68C', '#98FB98'];
+            const confettiShapes = ['💕', '💖', '💗', '💝', '💘', '⭐', '✨', '🎉', '🎊', '💫'];
+            
+            // Create confetti bursts from all sides
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    createConfettiPiece(confettiColors, confettiShapes);
+                }, i * 30);
+            }
+
+            // Keep creating confetti for 5 seconds
+            let confettiInterval = setInterval(() => {
+                for (let i = 0; i < 10; i++) {
+                    createConfettiPiece(confettiColors, confettiShapes);
+                }
+            }, 200);
+
+            setTimeout(() => clearInterval(confettiInterval), 5000);
+        }
+
+        function createConfettiPiece(colors, shapes) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            
+            // Random chance for emoji or colored square
+            if (Math.random() > 0.5) {
+                confetti.innerHTML = shapes[Math.floor(Math.random() * shapes.length)];
+                confetti.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            } else {
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+            }
+
+            // Random starting position from sides
+            const side = Math.floor(Math.random() * 4);
+            if (side === 0) { // top
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-20px';
+            } else if (side === 1) { // right
+                confetti.style.left = '100%';
+                confetti.style.top = Math.random() * 100 + '%';
+            } else if (side === 2) { // left
+                confetti.style.left = '-20px';
+                confetti.style.top = Math.random() * 100 + '%';
+            } else { // top (more from top)
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-20px';
+            }
+
+            document.body.appendChild(confetti);
+
+            // Animate
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 10 + 5;
+            const duration = Math.random() * 3 + 2;
+            
+            confetti.style.animation = `confetti-fall ${duration}s linear forwards`;
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+            setTimeout(() => confetti.remove(), duration * 1000);
+        }
 
         function createFireworks() {
             const colors = ['#FFB6D9', '#FF8DC7', '#E0BBE4', '#D4A5D9', '#FFC9E0', '#FFE5EC'];
